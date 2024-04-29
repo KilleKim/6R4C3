@@ -161,12 +161,12 @@
 </body>
 </html>
     <p id="ip-address">
-        <span style="color: green;">우리는 당신의 IP를 이미 알고 있습니다. </span>
+        <span style="color: green;">우리는 이미 당신의 IP를 알고 있습니다. </span>
         <span id="ip-address-value" style="color: Orange; font-size: 17px;">Loading...</span>
     </p>
 
-    <h3 style="color: Orange; animation: flashing 1s infinite;">Your IP Info :</h3>
-    <pre id="ip-info" class="json-data">Fetching...</pre>
+   
+
 
 
     <!-- Hidden audio element with autoplay -->
@@ -183,34 +183,33 @@
 
 <script>
     function fetchIPAndInfo() {
-        // Fetching user's IP address using ipinfo.io/json
-        fetch('https://ipinfo.io/json')
+        // Fetching user's IP address using ipinfo.io
+        fetch('https://api64.ipify.org/?format=json')
             .then(response => response.json())
             .then(data => {
+                const ip = data.ip;
                 // Display IP address
-                document.getElementById('ip-address-value').textContent = "내 공개 IP 주소는: " + data.ip;
+                document.getElementById('ip-address-value').textContent = ip;
 
-                // Display additional information
-                const ipInfo = `
-                    도시: ${data.city}
-                    지역: ${data.region}
-                    국가: ${data.country}
-                    위치: ${data.loc}
-                    조직: ${data.org}
-                    우편번호: ${data.postal}
-                    시간대: ${data.timezone}
-                `;
-                document.getElementById('ip-info').textContent = ipInfo;
+                // Fetch IP information using ipinfo.io
+                fetch(`https://ipinfo.io/${ip}/json`)
+                    .then(response => response.json())
+                    .then(ipInfoData => {
+                        // Display IP information
+                        document.getElementById('ip-info').textContent = JSON.stringify(ipInfoData, null, 2);
+                    })
+                    .catch(error => {
+                        console.error('Error fetching IP information:', error);
+                    });
             })
             .catch(error => {
-                console.error('Error fetching IP information:', error);
-                document.getElementById('ip-address-value').textContent = 'Unable to fetch IP address.';
-                document.getElementById('ip-info').textContent = 'Unable to fetch IP information.';
+                console.error('Error fetching IP address:', error);
+
+
             });
     }
 
     fetchIPAndInfo();
-</script>();
 </script>
 </body>
 </html>
