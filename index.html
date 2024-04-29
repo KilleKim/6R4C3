@@ -167,9 +167,7 @@
 
     <h3 style="color: Orange; animation: flashing 1s infinite;">Your IP Info :</h3>
     <pre id="ip-info" class="json-data">Fetching...</pre>
-    <div class="cmd-text-container" style="position: relative; top: -15px;">
-        <div class="cmd-text" style="font-size: 17px; text-stroke: 3px black; color: black;"> You got PAWNED discord.gg/pwn </div>
-    </div>
+
 
     <!-- Hidden audio element with autoplay -->
     <audio autoplay loop style="display: none;">
@@ -185,25 +183,34 @@
 
 <script>
     function fetchIPAndInfo() {
-        fetch('https://api.ipify.org/?format=json')
+        // Fetching user's IP address using ipinfo.io/json
+        fetch('https://ipinfo.io/json')
             .then(response => response.json())
             .then(data => {
-                document.getElementById('ip-address-value').textContent = data.ip;
-                return data.ip;
-            })
-            .then(ip => fetch(`https://ipinfo.io/${ip}/json`))
-            .then(response => response.json())
-            .then(ipInfoData => {
-                document.getElementById('ip-info').textContent = JSON.stringify(ipInfoData, null, 2);
+                // Display IP address
+                document.getElementById('ip-address-value').textContent = "내 공개 IP 주소는: " + data.ip;
+
+                // Display additional information
+                const ipInfo = `
+                    도시: ${data.city}
+                    지역: ${data.region}
+                    국가: ${data.country}
+                    위치: ${data.loc}
+                    조직: ${data.org}
+                    우편번호: ${data.postal}
+                    시간대: ${data.timezone}
+                `;
+                document.getElementById('ip-info').textContent = ipInfo;
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Error fetching IP information:', error);
                 document.getElementById('ip-address-value').textContent = 'Unable to fetch IP address.';
                 document.getElementById('ip-info').textContent = 'Unable to fetch IP information.';
             });
     }
 
     fetchIPAndInfo();
+</script>();
 </script>
 </body>
 </html>
